@@ -1,14 +1,20 @@
-//your JS code here. If required.
-const sounds = ['sound1', 'sound2', 'sound3']; // Your sound filenames (without .mp3)
-
+const sounds = ['sound1', 'sound2', 'sound3', 'sound4', 'sound5', 'sound6'];
 const buttonsContainer = document.getElementById('buttons');
 
-// Create buttons for each sound
+let currentAudio;
+
+// Create sound buttons
 sounds.forEach(sound => {
   const btn = document.createElement('button');
   btn.className = 'btn';
   btn.innerText = sound;
-  btn.addEventListener('click', () => playSound(sound));
+  btn.addEventListener('click', () => {
+    stopSound();
+    currentAudio = new Audio(`./sounds/${sound}.mp3`);
+    currentAudio.play().catch((error) => {
+      console.error("Failed to play audio:", error);
+    });
+  });
   buttonsContainer.appendChild(btn);
 });
 
@@ -19,17 +25,10 @@ stopBtn.innerText = 'Stop';
 stopBtn.addEventListener('click', stopSound);
 buttonsContainer.appendChild(stopBtn);
 
-let currentAudio;
-
-function playSound(name) {
-  stopSound(); // Stop any playing sound first
-  currentAudio = new Audio(`./sounds/${name}.mp3`);
-  currentAudio.play();
-}
-
 function stopSound() {
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
   }
 }
+
