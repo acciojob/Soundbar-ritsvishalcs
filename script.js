@@ -1,24 +1,29 @@
-const sounds = ['sound1', 'sound2', 'sound3', 'sound4', 'sound5', 'sound6'];
+const sounds = ['applause', 'bao', 'gasp', 'tada', 'victory', 'wrong'];
 const buttonsContainer = document.getElementById('buttons');
 
-let currentAudio;
+let currentAudioElement;
 
-// Create sound buttons
+// Create a button for each sound
 sounds.forEach(sound => {
   const btn = document.createElement('button');
   btn.className = 'btn';
   btn.innerText = sound;
   btn.addEventListener('click', () => {
     stopSound();
-    currentAudio = new Audio(`./sounds/${sound}.mp3`);
-    currentAudio.play().catch((error) => {
-      console.error("Failed to play audio:", error);
-    });
+
+    const audio = document.createElement('audio');
+    audio.src = `./sounds/${sound}.mp3`;
+    audio.setAttribute('autoplay', 'true');
+    document.body.appendChild(audio);
+
+    currentAudioElement = audio;
+
+    audio.play().catch(err => console.error("Play error:", err));
   });
   buttonsContainer.appendChild(btn);
 });
 
-// Create stop button
+// Create STOP button
 const stopBtn = document.createElement('button');
 stopBtn.className = 'stop';
 stopBtn.innerText = 'Stop';
@@ -26,9 +31,11 @@ stopBtn.addEventListener('click', stopSound);
 buttonsContainer.appendChild(stopBtn);
 
 function stopSound() {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
+  if (currentAudioElement) {
+    currentAudioElement.pause();
+    currentAudioElement.currentTime = 0;
+    currentAudioElement.remove(); // remove from DOM so Cypress detects stop
   }
 }
+
 
